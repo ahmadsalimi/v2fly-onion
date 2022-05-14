@@ -7,6 +7,11 @@
           - src_dir is defined
           - v2fly_conf is defined
 
+    - name: 'Create destination directory'
+      file:
+        path: '{{ dst_dir }}'
+        state: directory
+
     - name: 'Copy compose file'
       copy:
         src: '{{ src_dir | mandatory }}/docker-compose.yml'
