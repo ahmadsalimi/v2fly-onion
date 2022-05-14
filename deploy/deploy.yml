@@ -10,7 +10,7 @@
     - name: 'Copy compose file'
       copy:
         src: '{{ src_dir | mandatory }}/docker-compose.yml'
-        dest: '{{ dst_dir | mandatory }}'
+        dest: '{{ dst_dir | mandatory }}/docker-compose.yml'
 
     - name: 'Create config.json'
       template:
