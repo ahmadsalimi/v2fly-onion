@@ -6,5 +6,6 @@ services:
     volumes:
       - $V2FLY_CONF:/etc/v2ray/config.json:ro
     ports:
-      - 25912:25912
-      - 2052:2052
+      - 10087:10087
+      - 20522:20522
+      - 10099:10099
