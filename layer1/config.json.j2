@@ -1,0 +1,57 @@
+{
+  "inbounds": [{
+    "tag": "vmess-in",
+    "port": {{ l1_vmess_port | mandatory }},
+    "protocol": "vmess",
+    "settings": {
+      "clients": [{ "id": "{{ l1_vmess_secret | mandatory }}" }]
+    }
+  }, {
+    "tag": "ss-in",
+    "port": {{ l1_shadowsocks_port | mandatory }},
+    "protocol": "shadowsocks",
+    "settings": {
+      "method": "{{ l1_shadowsocks_method | default('chacha20-ietf-poly1305') }}",
+      "password": "{{ l1_shadowsocks_secret | mandatory }}",
+      "network": "tcp,udp"
+    }
+  }, {
+    "port": {{ l1_mtproto_port | mandatory }},
+    "protocol": "mtproto",
+    "tag": "tg-in",
+    "settings": {
+      "users": [{
+        "secret": "{{ l1_mtproto_secret | mandatory }}"
+      }]
+    }
+  }],
+  "outbounds": [{
+    "tag": "ss-out",
+    "protocol": "shadowsocks",
+    "settings": {
+      "servers": [
+        {
+          "address": "{{ l2_host | mandatory }}",
+          "port": {{ l2_shadowsocks_port | mandatory }},
+          "method": "{{ l2_shadowsocks_method | default('chacha20-ietf-poly1305') }}",
+          "password": "{{ l2_shadowsocks_secret | mandatory }}"
+        }
+      ]
+    }
+  }, {
+    "tag": "tg-out",
+    "protocol": "mtproto",
+    "settings": {}
+  }],
+  "routing": {
+    "rules": [{
+      "type": "field",
+      "inboundTag": ["tg-in"],
+      "outboundTag": "tg-out"
+    }, {
+      "type": "field",
+      "inboundTag": ["vmess-in", "ss-in"],
+      "outboundTag": "ss-out"
+    }]
+  }
+}
