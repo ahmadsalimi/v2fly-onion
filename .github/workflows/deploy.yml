@@ -28,6 +28,7 @@ jobs:
           run: pip3 install ansible
 
         - name: Write l1 ssh key to file
+          working-directory: ./deploy/
           run: |
             echo "${{ secrets.l1_ssh_key }}" > ${{ env.l1_ssh_key }}
             chmod 400 ${{ env.l1_ssh_key }}
