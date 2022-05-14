@@ -1,0 +1,41 @@
+{
+  "inbounds": [{
+    "tag": "tg-in",
+    "port": {{ l2_mtproto_port | mandatory }},
+    "protocol": "mtproto",
+    "settings": {
+      "users": [{
+        "secret": "{{ l2_mtproto_secret | mandatory }}"
+      }]
+    }
+  }, {
+    "tag": "ss-in",
+    "port": {{ l2_shadowsocks_port | mandatory }},
+    "protocol": "shadowsocks",
+    "settings": {
+      "method": "{{ l2_shadowsocks_method | default('chacha20-ietf-poly1305') }}",
+      "password": "{{ l2_shadowsocks_secret | mandatory }}",
+      "network": "tcp,udp"
+    }
+  }],
+  "outbounds": [{
+    "tag": "tg-out",
+    "protocol": "mtproto",
+    "settings": {}
+  }, {
+    "tag": "free-out",
+    "protocol": "freedom",
+    "settings": {}
+  }],
+  "routing": {
+    "rules": [{
+      "type": "field",
+      "inboundTag": ["tg-in"],
+      "outboundTag": "tg-out"
+    }, {
+      "type": "field",
+      "inboundTag": ["ss-in"],
+      "outboundTag": "free-out"
+    }]
+  }
+}

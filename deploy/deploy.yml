@@ -1,0 +1,29 @@
+---
+- hosts: all
+  tasks:
+    - name: 'Check mandatory variables are defined'
+      assert:
+        that:
+          - src_dir is defined
+          - v2fly_conf is defined
+
+    - name: 'Copy compose file'
+      copy:
+        src: '{{ src_dir | mandatory }}/docker-compose.yml'
+        dest: '{{ dst_dir | mandatory }}'
+
+    - name: 'Create config.json'
+      template:
+        src: '{{ src_dir | mandatory }}/config.json.j2'
+        dest: '{{ dst_dir | mandatory }}/{{ v2fly_conf | mandatory }}'
+
+    - name: 'Pull images'
+      shell: 'cd {{ dst_dir }} && docker-compose pull'
+
+    - name: 'Stop containers'
+      shell: 'cd {{ dst_dir }} && docker-compose down'
+
+    - name: 'Start containers'
+      shell: 'cd {{ dst_dir }} && docker-compose up -d'
+      environment:
+        V2FLY_CONF: '{{ v2fly_conf | mandatory }}'

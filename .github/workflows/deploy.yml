@@ -1,0 +1,48 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - master
+
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+
+    env:
+      l1_ssh_key: l1_ssh_key.pem
+      v2fly_conf: ./v2fly_config.json
+      l2_mtproto_port: 25912
+      l2_shadowsocks_port: 2052
+      l2_shadowsocks_method: chacha20-ietf-poly1305
+
+    steps:
+        - name: Checkout 🛎️
+          uses: actions/checkout@v3
+
+        - name: Install requirements
+          run: pip3 install ansible
+
+        - name: Write l1 ssh key to file
+          run: |
+            echo "${{ secrets.l1_ssh_key }}" > ${{ env.l1_ssh_key }}
+            chmod 400 ${{ env.l1_ssh_key }}
+
+        - name: Deploy
+          working-directory: ./deploy/
+          run: ansible-playbook -i inventory.yml
+            --extra-vars="
+            l1_user=${{ secrets.l1_user }}
+            l1_host=${{ secrets.l1_host }}
+            l1_ssh_key=${{ env.l1_ssh_key }}
+            l2_user=${{ secrets.l2_user }}
+            l2_host=${{ secrets.l2_host }}
+            l2_ssh_pass=${{ secrets.l2_ssh_pass }}
+            l2_mtproto_port=${{ env.l2_mtproto_port }}
+            l2_mtproto_secret=${{ secrets.l2_mtproto_secret }}
+            l2_shadowsocks_port=${{ env.l2_shadowsocks_port }}
+            l2_shadowsocks_method=${{ env.l2_shadowsocks_method }}
+            l2_shadowsocks_secret=${{ secrets.l2_shadowsocks_secret }}
+            v2fly_conf=${{ env.v2fly_conf }}"
+            deploy.yml
