@@ -2,7 +2,7 @@
 all:
   vars:
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
-    dst_dir: ~/v2fly
+    dst_dir: /etc/v2fly-onion
     cert_dir: '{{ dst_dir }}/certs'
   children:
     production:
