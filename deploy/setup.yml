@@ -11,7 +11,12 @@
     # Instructions for installing docker: https://docs.docker.com/engine/install/ubuntu/
     - name: 'Install apt requirements'
       apt:
-        name: ca-certificates curl gnupg lsb-release snapd
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+          - snapd
         state: latest
       become: yes
 
@@ -25,7 +30,11 @@
 
     - name: 'Install docker'
       apt:
-        name: docker-ce docker-ce-cli containerd.io docker-compose-plugin
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
         state: latest
       become: yes
 
