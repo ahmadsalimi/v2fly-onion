@@ -11,6 +11,7 @@
       file:
         path: '{{ dst_dir }}'
         state: directory
+      become: yes
 
     - name: 'Install apt requirements'
       apt:
@@ -28,23 +29,28 @@
       copy:
         src: '{{ src_dir | mandatory }}/docker-compose.yml'
         dest: '{{ dst_dir | mandatory }}/docker-compose.yml'
+      become: yes
 
     - name: 'Create config.json'
       template:
         src: '{{ src_dir | mandatory }}/config.json.j2'
         dest: '{{ dst_dir | mandatory }}/{{ v2fly_conf | mandatory }}'
+      become: yes
 
     - name: 'Pull images'
       shell: 'cd {{ dst_dir }} && docker-compose pull'
       environment:
         V2FLY_CONF: '{{ v2fly_conf | mandatory }}'
+      become: yes
 
     - name: 'Stop containers'
       shell: 'cd {{ dst_dir }} && docker-compose down'
       environment:
         V2FLY_CONF: '{{ v2fly_conf | mandatory }}'
+      become: yes
 
     - name: 'Start containers'
       shell: 'cd {{ dst_dir }} && docker-compose up -d'
       environment:
         V2FLY_CONF: '{{ v2fly_conf | mandatory }}'
+      become: yes
