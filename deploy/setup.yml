@@ -1,0 +1,48 @@
+---
+- hosts: all
+  tasks:
+    - name: 'Check mandatory variables are defined'
+      assert:
+        that:
+          - domain is defined
+          - cert_email is defined
+          - cert_dir is defined
+
+    # Instructions for installing docker: https://docs.docker.com/engine/install/ubuntu/
+    - name: 'Install apt requirements'
+      apt:
+        name: ca-certificates curl gnupg lsb-release snapd
+        state: latest
+      become: yes
+
+    - name: 'Add Docker’s official GPG key'
+      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor --batch --yes -o /usr/share/keyrings/docker-archive-keyring.gpg
+      become: yes
+
+    - name: 'Set up the stable repository (for docker)'
+      shell: echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+      become: yes
+
+    - name: 'Install docker'
+      apt:
+        name: docker-ce docker-ce-cli containerd.io docker-compose-plugin
+        state: latest
+      become: yes
+
+    - name: 'Create docker group'
+      shell: |
+        if ! [[ $(getent group docker) ]]; then
+          groupadd docker
+          usermod -aG docker $USER
+        fi
+      become: yes
+
+    - name: 'Install snap requirements'
+      community.general.snap:
+        name: certbot
+        classic: yes
+      become: yes
+
+    - name: 'Create the certificate'
+      shell: certbot certonly --standalone -d {{ domain | mandatory }} --non-interactive --agree-tos -m {{ cert_email | mandatory }} --config-dir {{ cert_dir | mandatory }}
+      become: yes

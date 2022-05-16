@@ -3,6 +3,7 @@ all:
   vars:
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
     dst_dir: ~/v2fly
+    cert_dir: '{{ dst_dir }}/certs'
   children:
     production:
       hosts:
@@ -11,8 +12,12 @@ all:
           ansible_user: '{{ l1_user }}'
           ansible_host: '{{ l1_host }}'
           ansible_ssh_private_key_file: '{{ l1_ssh_key }}'
+          domain: '{{ l1_host }}'
+          cert_email: '{{ l1_cert_email }}'
         layer2:
           src_dir: ../layer2
           ansible_user: '{{ l2_user }}'
           ansible_host: '{{ l2_host }}'
           ansible_ssh_pass: '{{ l2_ssh_pass }}'
+          domain: '{{ l2_host }}'
+          cert_email: '{{ l2_cert_email }}'
