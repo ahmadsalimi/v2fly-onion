@@ -1,0 +1,11 @@
+---
+- hosts: all
+  tasks:
+    - name: 'Check mandatory variables are defined'
+      assert:
+        that:
+          - cert_dir is defined
+
+    - name: 'Create the certificate'
+      shell: certbot renew --config-dir {{ cert_dir | mandatory }}
+      become: yes

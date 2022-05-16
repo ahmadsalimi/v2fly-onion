@@ -1,0 +1,35 @@
+name: Renew certificates
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+
+    env:
+      l1_ssh_key: l1_ssh_key.pem
+
+    steps:
+        - name: Checkout 🛎️
+          uses: actions/checkout@v3
+
+        - name: Install requirements
+          run: pip3 install ansible
+
+        - name: Write l1 ssh key to file
+          working-directory: ./deploy/
+          run: |
+            echo "${{ secrets.l1_ssh_key }}" > ${{ env.l1_ssh_key }}
+            chmod 400 ${{ env.l1_ssh_key }}
+
+        - name: Setup
+          working-directory: ./deploy/
+          run: ansible-playbook -i inventory.yml
+            --extra-vars="
+            l1_user=${{ secrets.l1_user }}
+            l1_host=${{ secrets.l1_host }}
+            l1_ssh_key=${{ env.l1_ssh_key }}
+            l2_user=${{ secrets.l2_user }}
+            l2_host=${{ secrets.l2_host }}
+            l2_ssh_pass=${{ secrets.l2_ssh_pass }}"
+            cert-renew.yml
