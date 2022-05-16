@@ -12,6 +12,18 @@
         path: '{{ dst_dir }}'
         state: directory
 
+    - name: 'Install apt requirements'
+      apt:
+        name: snapd
+        state: latest
+      become: yes
+
+    - name: 'Install snap requirements'
+      community.general.snap:
+        name: certbot
+        classic: yes
+      become: yes
+
     - name: 'Copy compose file'
       copy:
         src: '{{ src_dir | mandatory }}/docker-compose.yml'
