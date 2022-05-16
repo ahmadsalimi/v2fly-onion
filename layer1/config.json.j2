@@ -26,6 +26,16 @@
     }
   }],
   "outbounds": [{
+    "tag": "vmess-out",
+    "protocol": "vmess",
+    "settings": {
+      "vnext": [{
+        "address": "{{ l2_host | mandatory }}",
+        "port": {{ l2_vmess_port | mandatory }},
+        "users": [{ "id": "{{ l2_vmess_secret | mandatory }}" }]
+      }]
+    },
+  }, {
     "tag": "ss-out",
     "protocol": "shadowsocks",
     "settings": {
@@ -50,8 +60,12 @@
       "outboundTag": "tg-out"
     }, {
       "type": "field",
-      "inboundTag": ["vmess-in", "ss-in"],
+      "inboundTag": ["ss-in"],
       "outboundTag": "ss-out"
+    }, {
+      "type": "field",
+      "inboundTag": ["vmess-in"],
+      "outboundTag": "vmess-out"
     }]
   }
 }

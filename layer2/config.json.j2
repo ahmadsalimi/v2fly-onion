@@ -1,5 +1,12 @@
 {
   "inbounds": [{
+    "tag": "vmess-in",
+    "port": {{ l2_vmess_port | mandatory }},
+    "protocol": "vmess",
+    "settings": {
+      "clients": [{ "id": "{{ l2_vmess_secret | mandatory }}" }]
+    }
+  }, {
     "tag": "tg-in",
     "port": {{ l2_mtproto_port | mandatory }},
     "protocol": "mtproto",
@@ -34,7 +41,7 @@
       "outboundTag": "tg-out"
     }, {
       "type": "field",
-      "inboundTag": ["ss-in"],
+      "inboundTag": ["ss-in", "vmess-in"],
       "outboundTag": "free-out"
     }]
   }

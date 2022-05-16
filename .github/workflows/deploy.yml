@@ -14,8 +14,10 @@ jobs:
       v2fly_conf: ./v2fly_config.json
       l1_ssh_key: l1_ssh_key.pem
       l1_vmess_port: 10087
-      l1_shadowsocks_port: 20522
       l1_mtproto_port: 10099
+      l1_shadowsocks_port: 20522
+      l1_shadowsocks_method: chacha20-ietf-poly1305
+      l2_vmess_port: 10092
       l2_mtproto_port: 25912
       l2_shadowsocks_port: 2052
       l2_shadowsocks_method: chacha20-ietf-poly1305
@@ -43,12 +45,15 @@ jobs:
             l1_vmess_port=${{ env.l1_vmess_port }}
             l1_vmess_secret=${{ secrets.l1_vmess_secret }}
             l1_shadowsocks_port=${{ env.l1_shadowsocks_port }}
+            l1_shadowsocks_method=${{ env.l1_shadowsocks_method }}
             l1_shadowsocks_secret=${{ secrets.l1_shadowsocks_secret }}
             l1_mtproto_port=${{ env.l1_mtproto_port }}
             l1_mtproto_secret=${{ secrets.l1_mtproto_secret }}
             l2_user=${{ secrets.l2_user }}
             l2_host=${{ secrets.l2_host }}
             l2_ssh_pass=${{ secrets.l2_ssh_pass }}
+            l2_vmess_port=${{ env.l2_vmess_port }}
+            l2_vmess_secret=${{ secrets.l2_vmess_secret }}
             l2_mtproto_port=${{ env.l2_mtproto_port }}
             l2_mtproto_secret=${{ secrets.l2_mtproto_secret }}
             l2_shadowsocks_port=${{ env.l2_shadowsocks_port }}
