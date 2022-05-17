@@ -10,31 +10,22 @@ echo "CHALLENGE_VALUE: ${CERTBOT_VALIDATION}"
 echo "DNS_SERVER: ${DNS_SERVER}"
 echo "ZONE: ${CLOUDFLARE_ZONE}"
 
-ADD_RECORD_RESULT=$(curl -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE}/dns_records" \
+add_dns_record(type, name, content, ttl, proxiable, proxied) {
+    curl -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE}/dns_records" \
      -H "X-Auth-Email: ${CLOUDFLARE_EMAIL}" \
      -H "X-Auth-Key: ${CLOUDFLARE_KEY}" \
      -H "Content-Type: application/json" \
-     --data "{\"type\":\"TXT\",\"name\":\"${CHALLENGE_DOMAIN}\",\"content\":\"${CERTBOT_VALIDATION}\", \"ttl\": 120}" -s | jq -r "[.success, .errors[].message] | @csv")
+     --data "{\"type\":\"$type\",\"name\":\"$name\",\"content\":\"${content}\", \"ttl\": $ttl, \"proxiable\": $proxiable, \"proxied\": $proxied}" -s | jq -r "[.success, .errors[].message] | @csv"
+}
 
+ADD_RECORD_RESULT=$(add_dns_record(TXT, "${CHALLENGE_DOMAIN}", "${CERTBOT_VALIDATION}", 120, false, false))
 echo "Add challange record result: ${ADD_RECORD_RESULT}"
 
-
-ADD_DNS_RESULT=$(curl -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE}/dns_records" \
-     -H "X-Auth-Email: ${CLOUDFLARE_EMAIL}" \
-     -H "X-Auth-Key: ${CLOUDFLARE_KEY}" \
-     -H "Content-Type: application/json" \
-     --data "{\"type\":\"A\",\"name\":\"\*\",\"content\":\"${IP}\", \"ttl\": 1, \"proxiable\": true, \"proxied\": true}}" -s | jq -r "[.success, .errors[].message] | @csv")
-
+ADD_DNS_RESULT=${add_dns_record(A, '*', ${IP}, 1, true, true)}
 echo "Add * record result: ${ADD_DNS_RESULT}"
 
-
-ADD_DNS_RESULT=$(curl -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE}/dns_records" \
-     -H "X-Auth-Email: ${CLOUDFLARE_EMAIL}" \
-     -H "X-Auth-Key: ${CLOUDFLARE_KEY}" \
-     -H "Content-Type: application/json" \
-     --data "{\"type\":\"A\",\"name\":\"@\",\"content\":\"${IP}\", \"ttl\": 1, \"proxiable\": true, \"proxied\": true}" -s | jq -r "[.success, .errors[].message] | @csv")
-
-echo "Add @ record result: ${ADD_DNS_RESULT}"
+ADD_DNS_RESULT=${add_dns_record(A, '@', ${IP}, 1, true, true)}
+echo "Add * record result: ${ADD_DNS_RESULT}"
 
 
 if [[ ! $(echo "${ADD_RECORD_RESULT}" | grep "true") ]]; then

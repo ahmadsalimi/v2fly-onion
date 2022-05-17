@@ -62,11 +62,11 @@
 
     - name: 'Copy manual auth script'
       copy:
-          src: '{{ item }}'
-          dest: '{{ dst_dir | mandatory }}/domain-auth/'
-          with_fileglob:
-            - '{{ cdn_dir | mandatory }}/*.sh'
-        become: yes
+        src: '{{ item }}'
+        dest: '{{ dst_dir | mandatory }}/domain-auth/'
+      with_fileglob:
+        - '{{ cdn_dir | mandatory }}/*.sh'
+      become: yes
 
     - name: 'Create config.sh'
       template:
