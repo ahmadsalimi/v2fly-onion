@@ -6,18 +6,24 @@
         that:
           - cert_dir is defined
 
+    - name: 'Create domain auth directory'
+      file:
+        path: '{{ domain_auth_dir | mandatory }}'
+        state: directory
+      become: yes
+
     - name: 'Copy manual auth script'
       copy:
-          src: '{{ item }}'
-          dest: '{{ dst_dir | mandatory }}/domain-auth/'
-          with_fileglob:
-            - '{{ cdn_dir | mandatory }}/*.sh'
-        become: yes
+        src: '{{ item }}'
+        dest: '{{ domain_auth_dir | mandatory }}'
+      with_fileglob:
+        - '{{ cdn_dir | mandatory }}/*.sh'
+      become: yes
 
     - name: 'Create config.sh'
       template:
         src: '{{ cdn_dir | mandatory }}/config.sh.j2'
-        dest: '{{ dst_dir | mandatory }}/domain-auth/'
+        dest: '{{ domain_auth_dir | mandatory }}'
       become: yes
 
     - name: 'Create the certificate'
