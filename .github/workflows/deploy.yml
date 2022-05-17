@@ -5,6 +5,7 @@ on:
       - master
     paths-ignore:
       - .gitignore
+      - LICENSE
       - '**.md'
       - '**/setup.yml'
       - '**/cert-renew.yml'
@@ -16,16 +17,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     env:
-      v2fly_conf: ./v2fly_config.json
       l1_ssh_key: l1_ssh_key.pem
-      l1_vmess_port: 10087
-      l1_mtproto_port: 10099
-      l1_shadowsocks_port: 20522
-      l1_shadowsocks_method: chacha20-ietf-poly1305
-      l2_vmess_port: 10092
-      l2_mtproto_port: 25912
-      l2_shadowsocks_port: 2052
-      l2_shadowsocks_method: chacha20-ietf-poly1305
 
     steps:
         - name: Checkout 🛎️
@@ -47,22 +39,16 @@ jobs:
             l1_user=${{ secrets.l1_user }}
             l1_host=${{ secrets.l1_host }}
             l1_ssh_key=${{ env.l1_ssh_key }}
-            l1_vmess_port=${{ env.l1_vmess_port }}
-            l1_vmess_secret=${{ secrets.l1_vmess_secret }}
-            l1_shadowsocks_port=${{ env.l1_shadowsocks_port }}
-            l1_shadowsocks_method=${{ env.l1_shadowsocks_method }}
-            l1_shadowsocks_secret=${{ secrets.l1_shadowsocks_secret }}
-            l1_mtproto_port=${{ env.l1_mtproto_port }}
-            l1_mtproto_secret=${{ secrets.l1_mtproto_secret }}
+            l1_vmess_ws_port=${{ secrets.l1_vmess_ws_port }}
+            l1_vmess_ws_secret=${{ secrets.l1_vmess_ws_secret }}
             l2_user=${{ secrets.l2_user }}
             l2_host=${{ secrets.l2_host }}
             l2_ssh_pass=${{ secrets.l2_ssh_pass }}
-            l2_vmess_port=${{ env.l2_vmess_port }}
+            l2_vmess_ws_port=${{ secrets.l2_vmess_ws_port }}
+            l2_vmess_ws_secret=${{ secrets.l2_vmess_ws_secret }}
+            l2_vmess_ws_path=${{ secrets.l2_vmess_ws_path }}"
+            l2_vmess_port=${{ secrets.l2_vmess_port }}
             l2_vmess_secret=${{ secrets.l2_vmess_secret }}
-            l2_mtproto_port=${{ env.l2_mtproto_port }}
-            l2_mtproto_secret=${{ secrets.l2_mtproto_secret }}
-            l2_shadowsocks_port=${{ env.l2_shadowsocks_port }}
-            l2_shadowsocks_method=${{ env.l2_shadowsocks_method }}
-            l2_shadowsocks_secret=${{ secrets.l2_shadowsocks_secret }}
-            v2fly_conf=${{ env.v2fly_conf }}"
+            l2_mtproto_port=${{ secrets.l2_mtproto_port }}
+            l2_mtproto_secret=${{ secrets.l2_mtproto_secret }}"
             deploy.yml

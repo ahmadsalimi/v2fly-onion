@@ -1,12 +1,35 @@
 {
   "inbounds": [{
+    "tag": "vmess-ws-in",
+    "port": {{ l2_vmess_ws_port | mandatory }},
+    "protocol": "vmess",
+    "settings": {
+      "clients": [{ "id": "{{ l2_vmess_ws_secret | mandatory }}" }]
+    },
+    "streamSettings": {
+      "tlsSettings": {
+        "allowInsecure": false,
+        "certificates": [{
+          "certificateFile": "{{ container_cert_dir | mandatory }}/live/{{ l2_domain | mandatory }}/fullchain.pem",
+          "keyFile": "{{ container_cert_dir | mandatory }}/live/{{ l2_domain | mandatory }}/privkey.pem"
+        }]
+      },
+      "network": "ws",
+      "security": "tls",
+      "wsSettings": {
+        "path": "{{ l2_vmess_ws_path | mandatory }}"
+      }
+    }
+  },
+  {
     "tag": "vmess-in",
     "port": {{ l2_vmess_port | mandatory }},
     "protocol": "vmess",
     "settings": {
       "clients": [{ "id": "{{ l2_vmess_secret | mandatory }}" }]
     }
-  }, {
+  },
+  {
     "tag": "tg-in",
     "port": {{ l2_mtproto_port | mandatory }},
     "protocol": "mtproto",
@@ -14,15 +37,6 @@
       "users": [{
         "secret": "{{ l2_mtproto_secret | mandatory }}"
       }]
-    }
-  }, {
-    "tag": "ss-in",
-    "port": {{ l2_shadowsocks_port | mandatory }},
-    "protocol": "shadowsocks",
-    "settings": {
-      "method": "{{ l2_shadowsocks_method | default('chacha20-ietf-poly1305') }}",
-      "password": "{{ l2_shadowsocks_secret | mandatory }}",
-      "network": "tcp,udp"
     }
   }],
   "outbounds": [{
@@ -41,7 +55,7 @@
       "outboundTag": "tg-out"
     }, {
       "type": "field",
-      "inboundTag": ["ss-in", "vmess-in"],
+      "inboundTag": ["vmess-ws-in", "vmess-in"],
       "outboundTag": "free-out"
     }]
   }
