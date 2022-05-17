@@ -15,6 +15,8 @@ all:
           ansible_ssh_private_key_file: '{{ l1_ssh_key }}'
           domain: '{{ l1_host }}'
           cert_email: '{{ l1_cert_email }}'
+          cloudflare_email: '{{ l1_cloudflare_email }}'
+          cloudflare_key: '{{ l1_cloudflare_key }}'
         layer2:
           src_dir: ../layer2
           cdn_dir: ../cdns/{{ l2_cdn | mandatory }}
@@ -23,3 +25,5 @@ all:
           ansible_ssh_pass: '{{ l2_ssh_pass }}'
           domain: '{{ l2_host }}'
           cert_email: '{{ l2_cert_email }}'
+          cloudflare_email: '{{ l2_cloudflare_email }}'
+          cloudflare_key: '{{ l2_cloudflare_key }}'

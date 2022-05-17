@@ -12,3 +12,4 @@ CLOUDFLARE_ZONE=$(curl -X GET "https://api.cloudflare.com/client/v4/zones?name=$
      -H "X-Auth-Email: ${CLOUDFLARE_EMAIL}" \
      -H "X-Auth-Key: ${CLOUDFLARE_KEY}" \
      -H "Content-Type: application/json" -s | jq -r '.result[0].id')
+     
