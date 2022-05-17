@@ -9,6 +9,7 @@ all:
       hosts:
         layer1:
           src_dir: ../layer1
+          cdn_dir: ../cdns/{{ l1_cdn | mandatory }}
           ansible_user: '{{ l1_user }}'
           ansible_host: '{{ l1_host }}'
           ansible_ssh_private_key_file: '{{ l1_ssh_key }}'
@@ -16,6 +17,7 @@ all:
           cert_email: '{{ l1_cert_email }}'
         layer2:
           src_dir: ../layer2
+          cdn_dir: ../cdns/{{ l2_cdn | mandatory }}
           ansible_user: '{{ l2_user }}'
           ansible_host: '{{ l2_host }}'
           ansible_ssh_pass: '{{ l2_ssh_pass }}'

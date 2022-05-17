@@ -2,6 +2,7 @@
 
 CLOUDFLARE_KEY={{ cloudflare_key | mandatory}}
 CLOUDFLARE_EMAIL={{ cloudflare_email | mandatory}}
+IP={{ host | mandatory }}
 
 CHALLENGE_PREFIX="_acme-challenge"
 CHALLENGE_DOMAIN="${CHALLENGE_PREFIX}.${CERTBOT_DOMAIN}"

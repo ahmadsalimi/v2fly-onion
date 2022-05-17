@@ -16,7 +16,26 @@ ADD_RECORD_RESULT=$(curl -X POST "https://api.cloudflare.com/client/v4/zones/${C
      -H "Content-Type: application/json" \
      --data "{\"type\":\"TXT\",\"name\":\"${CHALLENGE_DOMAIN}\",\"content\":\"${CERTBOT_VALIDATION}\", \"ttl\": 120}" -s | jq -r "[.success, .errors[].message] | @csv")
 
-echo "Add record result: ${ADD_RECORD_RESULT}"
+echo "Add challange record result: ${ADD_RECORD_RESULT}"
+
+
+ADD_DNS_RESULT=$(curl -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE}/dns_records" \
+     -H "X-Auth-Email: ${CLOUDFLARE_EMAIL}" \
+     -H "X-Auth-Key: ${CLOUDFLARE_KEY}" \
+     -H "Content-Type: application/json" \
+     --data "{\"type\":\"A\",\"name\":\"\*\",\"content\":\"${IP}\", \"ttl\": 1, \"proxiable\": true, \"proxied\": true}}" -s | jq -r "[.success, .errors[].message] | @csv")
+
+echo "Add * record result: ${ADD_DNS_RESULT}"
+
+
+ADD_DNS_RESULT=$(curl -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE}/dns_records" \
+     -H "X-Auth-Email: ${CLOUDFLARE_EMAIL}" \
+     -H "X-Auth-Key: ${CLOUDFLARE_KEY}" \
+     -H "Content-Type: application/json" \
+     --data "{\"type\":\"A\",\"name\":\"@\",\"content\":\"${IP}\", \"ttl\": 1, \"proxiable\": true, \"proxied\": true}" -s | jq -r "[.success, .errors[].message] | @csv")
+
+echo "Add @ record result: ${ADD_DNS_RESULT}"
+
 
 if [[ ! $(echo "${ADD_RECORD_RESULT}" | grep "true") ]]; then
     echo "Add record failed, exit"
