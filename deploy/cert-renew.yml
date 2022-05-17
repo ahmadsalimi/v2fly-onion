@@ -6,6 +6,26 @@
         that:
           - cert_dir is defined
 
+    - name: 'Create domain auth directory'
+      file:
+        path: '{{ domain_auth_dir | mandatory }}'
+        state: directory
+      become: yes
+
+    - name: 'Copy manual auth script'
+      copy:
+        src: '{{ item }}'
+        dest: '{{ domain_auth_dir | mandatory }}'
+      with_fileglob:
+        - '{{ cdn_dir | mandatory }}/*.sh'
+      become: yes
+
+    - name: 'Create config.sh'
+      template:
+        src: '{{ cdn_dir | mandatory }}/config.sh.j2'
+        dest: '{{ domain_auth_dir | mandatory }}'
+      become: yes
+
     - name: 'Create the certificate'
-      shell: certbot renew --config-dir {{ cert_dir | mandatory }}
+      shell: certbot renew --config-dir {{ cert_dir | mandatory }} --manual-auth-hook {{ dest_dir | mandatory}}/domain-auth/update-dns.sh --manual-cleanup-hook {{ dest_dir | mandatory}}/domain-auth/clean-dns.sh
       become: yes

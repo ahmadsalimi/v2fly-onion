@@ -8,6 +8,7 @@ on:
       - '**.md'
       - '**/setup.yml'
       - '**/cert-renew.yml'
+      - cdns/
 
   workflow_dispatch:
 

@@ -4,20 +4,27 @@ all:
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
     dst_dir: /etc/v2fly-onion
     cert_dir: '{{ dst_dir }}/certs'
+    domain_auth_dir: '{{ dst_dir }}/domain-auth'
   children:
     production:
       hosts:
         layer1:
           src_dir: ../layer1
+          cdn_dir: ../cdns/{{ l1_cdn | mandatory }}
           ansible_user: '{{ l1_user }}'
           ansible_host: '{{ l1_host }}'
           ansible_ssh_private_key_file: '{{ l1_ssh_key }}'
           domain: '{{ l1_host }}'
           cert_email: '{{ l1_cert_email }}'
+          cloudflare_email: '{{ l1_cloudflare_email }}'
+          cloudflare_key: '{{ l1_cloudflare_key }}'
         layer2:
           src_dir: ../layer2
+          cdn_dir: ../cdns/{{ l2_cdn | mandatory }}
           ansible_user: '{{ l2_user }}'
           ansible_host: '{{ l2_host }}'
           ansible_ssh_pass: '{{ l2_ssh_pass }}'
           domain: '{{ l2_host }}'
           cert_email: '{{ l2_cert_email }}'
+          cloudflare_email: '{{ l2_cloudflare_email }}'
+          cloudflare_key: '{{ l2_cloudflare_key }}'
