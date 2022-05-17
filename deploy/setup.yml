@@ -17,6 +17,7 @@
           - gnupg
           - lsb-release
           - snapd
+          - jq
         state: latest
       become: yes
 
