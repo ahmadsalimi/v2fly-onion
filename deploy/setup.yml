@@ -17,6 +17,7 @@
           - gnupg
           - lsb-release
           - snapd
+          - jq
         state: latest
       become: yes
 
@@ -59,6 +60,26 @@
         fi
       become: yes
 
+    - name: 'Create domain auth directory'
+      file:
+        path: '{{ domain_auth_dir | mandatory }}'
+        state: directory
+      become: yes
+
+    - name: 'Copy manual auth script'
+      copy:
+        src: '{{ item }}'
+        dest: '{{ domain_auth_dir | mandatory }}'
+      with_fileglob:
+        - '{{ cdn_dir | mandatory }}/*.sh'
+      become: yes
+
+    - name: 'Create config.sh'
+      template:
+        src: '{{ cdn_dir | mandatory }}/config.sh.j2'
+        dest: '{{ domain_auth_dir | mandatory }}'
+      become: yes
+
     - name: 'Create the certificate'
-      shell: certbot certonly --standalone -d {{ domain | mandatory }} --non-interactive --agree-tos -m {{ cert_email | mandatory }} --config-dir {{ cert_dir | mandatory }}
+      shell: certbot certonly --manual -d '*.{{ domain | mandatory}}'' -d {{ domain | mandatory }} --preferred-challenges=dns --non-interactive --agree-tos -m {{ cert_email | mandatory }} --config-dir {{ cert_dir | mandatory }} --manual-auth-hook {{ domain_auth_dir | mandatory }}/update-dns.sh --manual-cleanup-hook {{ domain_auth_dir | mandatory }}/clean-dns.sh
       become: yes

@@ -30,8 +30,12 @@ jobs:
             l1_host=${{ secrets.l1_host }}
             l1_ssh_key=${{ env.l1_ssh_key }}
             l1_cert_email=${{ secrets.l1_cert_email }}
+            l1_cloudflare_email=${{ secrets.l1_cloudflare_email }}
+            l1_cloudflare_key=${{ secrets.l1_cloudflare_key }}
             l2_user=${{ secrets.l2_user }}
             l2_host=${{ secrets.l2_host }}
             l2_ssh_pass=${{ secrets.l2_ssh_pass }}
-            l2_cert_email=${{ secrets.l2_cert_email }}"
+            l2_cert_email=${{ secrets.l2_cert_email }}
+            l2_cloudflare_email=${{ secrets.l2_cloudflare_email }}
+            l2_cloudflare_key=${{ secrets.l2_cloudflare_key }}"
             setup.yml

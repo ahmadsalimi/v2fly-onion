@@ -9,6 +9,7 @@ on:
       - '**.md'
       - '**/setup.yml'
       - '**/cert-renew.yml'
+      - cdns/
 
   workflow_dispatch:
 
@@ -41,6 +42,7 @@ jobs:
             l1_ssh_key=${{ env.l1_ssh_key }}
             l1_vmess_ws_port=${{ secrets.l1_vmess_ws_port }}
             l1_vmess_ws_secret=${{ secrets.l1_vmess_ws_secret }}
+            l1_cs_subdomains=${{ secrets.l1_cs_subdomains }}
             l2_user=${{ secrets.l2_user }}
             l2_host=${{ secrets.l2_host }}
             l2_ssh_pass=${{ secrets.l2_ssh_pass }}
@@ -50,5 +52,6 @@ jobs:
             l2_vmess_port=${{ secrets.l2_vmess_port }}
             l2_vmess_secret=${{ secrets.l2_vmess_secret }}
             l2_mtproto_port=${{ secrets.l2_mtproto_port }}
-            l2_mtproto_secret=${{ secrets.l2_mtproto_secret }}"
+            l2_mtproto_secret=${{ secrets.l2_mtproto_secret }}
+            l2_cs_subdomains=${{ secrets.l2_cs_subdomains }}"
             deploy.yml
