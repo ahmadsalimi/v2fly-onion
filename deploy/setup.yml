@@ -81,5 +81,5 @@
       become: yes
 
     - name: 'Create the certificate'
-      shell: certbot certonly --manual -d '*.{{ domain | mandatory}}'' -d {{ domain | mandatory }} --preferred-challenges=dns --non-interactive --agree-tos -m {{ cert_email | mandatory }} --config-dir {{ cert_dir | mandatory }} --manual-auth-hook {{ dest_dir | mandatory}}/domain-auth/update-dns.sh --manual-cleanup-hook {{ dest_dir | mandatory}}/domain-auth/clean-dns.sh
+      shell: certbot certonly --manual -d '*.{{ domain | mandatory}}'' -d {{ domain | mandatory }} --preferred-challenges=dns --non-interactive --agree-tos -m {{ cert_email | mandatory }} --config-dir {{ cert_dir | mandatory }} --manual-auth-hook {{ domain_auth_dir | mandatory }}/update-dns.sh --manual-cleanup-hook {{ domain_auth_dir | mandatory }}/clean-dns.sh
       become: yes

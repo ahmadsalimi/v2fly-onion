@@ -3,28 +3,38 @@ all:
   vars:
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
     dst_dir: /etc/v2fly-onion
-    cert_dir: '{{ dst_dir }}/certs'
-    domain_auth_dir: '{{ dst_dir }}/domain-auth'
+    cert_dir: '{{ dst_dir | mandatory }}/certs'
+    domain_auth_dir: '{{ dst_dir | mandatory }}/domain-auth'
+    container_cert_dir: /etc/v2ray/certs
+    v2fly_conf: ./v2fly_config.json
+    l1_subdomains: '{{ l1_cs_subdomains.split(",") | mandatory }}'
+    l2_subdomains: '{{ l2_cs_subdomains.split(",") | mandatory }}'
   children:
     production:
       hosts:
         layer1:
-          src_dir: ../layer1
+          config_name: 'layer1'
+          ansible_user: '{{ l1_user | mandatory }}'
+          ansible_host: '{{ l1_host | mandatory }}'
+          ansible_ssh_private_key_file: '{{ l1_ssh_key | mandatory }}'
+          domain: '{{ l1_domain | mandatory }}'
+          cert_email: '{{ l1_cert_email | mandatory }}'
           cdn_dir: ../cdns/{{ l1_cdn | mandatory }}
-          ansible_user: '{{ l1_user }}'
-          ansible_host: '{{ l1_host }}'
-          ansible_ssh_private_key_file: '{{ l1_ssh_key }}'
-          domain: '{{ l1_host }}'
-          cert_email: '{{ l1_cert_email }}'
-          cloudflare_email: '{{ l1_cloudflare_email }}'
-          cloudflare_key: '{{ l1_cloudflare_key }}'
+          expose_ports:
+            - '{{ l1_vmess_ws_port | mandatory }}'
+          cloudflare_email: '{{ l1_cloudflare_email | mandatory }}'
+          cloudflare_key: '{{ l1_cloudflare_key | mandatory }}'
         layer2:
-          src_dir: ../layer2
+          config_name: 'layer2'
+          ansible_user: '{{ l2_user | mandatory }}'
+          ansible_host: '{{ l2_host | mandatory }}'
+          ansible_ssh_pass: '{{ l2_ssh_pass | mandatory }}'
+          domain: '{{ l2_domain | mandatory }}'
+          cert_email: '{{ l2_cert_email | mandatory }}'
           cdn_dir: ../cdns/{{ l2_cdn | mandatory }}
-          ansible_user: '{{ l2_user }}'
-          ansible_host: '{{ l2_host }}'
-          ansible_ssh_pass: '{{ l2_ssh_pass }}'
-          domain: '{{ l2_host }}'
-          cert_email: '{{ l2_cert_email }}'
-          cloudflare_email: '{{ l2_cloudflare_email }}'
-          cloudflare_key: '{{ l2_cloudflare_key }}'
+          expose_ports:
+            - '{{ l2_vmess_ws_port | mandatory }}'
+            - '{{ l2_vmess_port | mandatory }}'
+            - '{{ l2_mtproto_port | mandatory }}'
+          cloudflare_email: '{{ l2_cloudflare_email | mandatory }}'
+          cloudflare_key: '{{ l2_cloudflare_key | mandatory }}'

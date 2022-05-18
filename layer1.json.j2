@@ -1,0 +1,41 @@
+{
+  "inbounds": [{
+    "port": {{ l1_vmess_ws_port | mandatory }},
+    "protocol": "vmess",
+    "settings": {
+      "clients": [{ "id": "{{ l1_vmess_ws_secret | mandatory }}" }]
+    },
+    "streamSettings": {
+      "tlsSettings": {
+        "allowInsecure": false,
+        "certificates": [{
+          "certificateFile": "{{ container_cert_dir | mandatory }}/live/{{ l1_domain | mandatory }}/fullchain.pem",
+          "keyFile": "{{ container_cert_dir | mandatory }}/live/{{ l1_domain | mandatory }}/privkey.pem"
+        }]
+      },
+      "network": "ws",
+      "security": "tls",
+      "wsSettings": {
+        "path": "{{ l1_vmess_ws_path | mandatory }}"
+      }
+    }
+  }],
+  "outbounds": [{
+    "protocol": "vmess",
+    "settings": {
+      "vnext": [{% for subdomain in l2_subdomains %}{
+        "address": "{{ subdomain | mandatory }}.{{ l2_domain | mandatory }}",
+        "port": {{ l2_vmess_ws_port | mandatory }},
+        "users": [{ "id": "{{ l2_vmess_ws_secret | mandatory }}" }]
+      }{% if not loop.last %},
+      {% endif %}{% endfor %}]
+    },
+    "streamSettings": {
+      "network": "ws",
+      "security": "tls",
+      "wsSettings": {
+        "path": "{{ l2_vmess_ws_path | mandatory }}"
+      }
+    }
+  }]
+}
